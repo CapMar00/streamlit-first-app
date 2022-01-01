@@ -4,6 +4,10 @@ import pandas as pd
 import plotly.express as px
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.pyplot as plt
+
+#print(plotly.__version__)
+#pip show plotly
+
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.title("Sentiment analysis con i tweet 🐦")
@@ -51,11 +55,11 @@ sentiment_count = pd.DataFrame({'Sentiment': sentiment_count.index, 'Tweets': se
 
 if st.sidebar.checkbox('Mostra grafico', True, key='1'):
     if select == "Colonne":
-        fig = px.bar(sentiment_count, x = 'Sentiment', y = 'Tweets', color='Tweets', height = 500)
-        st.plotly_chart(fig)
+        fig = px.bar(sentiment_count, x = 'Sentiment', y = 'Tweets', color='Tweets', height = 400)
+        st.plotly_chart(fig, use_container_width=True)
     else:
         fig = px.pie(sentiment_count, values = 'Tweets', names = 'Sentiment')
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width=True)
 
 st.sidebar.markdown('## 2. Mappa: quando e dove gli utenti hanno tweetato')
 hour = st.sidebar.slider('Scegli l\'ora del giorno', 0, 23)
@@ -74,8 +78,8 @@ choice = st.sidebar.multiselect('Scegli la compagnia', ('American', 'Delta', 'So
 
 if len(choice) > 0:
     choice_data = data[data.airline.isin(choice)]
-    fig_choice = px.histogram(choice_data, x = 'airline', y = 'airline_sentiment', histfunc = 'count', color = 'airline_sentiment', facet_col = 'airline_sentiment', labels = {'airline_sentiment':'tweets'}, height = 400, width = 600)
-    st.plotly_chart(fig_choice)
+    fig_choice = px.histogram(choice_data, x = 'airline', y = 'airline_sentiment', histfunc = 'count', color = 'airline_sentiment', facet_col = 'airline_sentiment', labels = {'airline_sentiment':'tweets'}, height = 400)
+    st.plotly_chart(fig_choice, use_container_width=True)
 
 
 st.sidebar.header("Word cloud")
@@ -86,7 +90,7 @@ if st.sidebar.checkbox("Mostra World Cloud", True, key='3'):
     df = data[data['airline_sentiment'] == word_sentiment]
     words = ' '.join(df['text'])
     processed_words = ' '.join([word for word in words.split() if 'http' not in word and not word.startswith('@') and word != 'RT' ])
-    wordcloud = WordCloud(stopwords=STOPWORDS, background_color='white', height = 650, width = 800).generate(processed_words)
+    wordcloud = WordCloud(stopwords=STOPWORDS, background_color='white', height = 650).generate(processed_words)
     plt.imshow(wordcloud)
     plt.xticks([])
     plt.yticks([])
