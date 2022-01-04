@@ -47,13 +47,13 @@ font-weight:bold;
 st.sidebar.markdown(html_tw, unsafe_allow_html=True)
 
 
-st.sidebar.markdown('# GRAFICI')
-st.sidebar.markdown('## 1. La distribuzione dei tweet')
-select = st.sidebar.selectbox('', ['Colonne', 'Torta'], key='1')
+st.markdown('# GRAFICI')
+st.markdown('## 1. La distribuzione dei tweet')
+select = st.selectbox('', ['Colonne', 'Torta'], key='1')
 sentiment_count = data['airline_sentiment'].value_counts()
 sentiment_count = pd.DataFrame({'Sentiment': sentiment_count.index, 'Tweets': sentiment_count.values})
 
-if st.sidebar.checkbox('Mostra grafico', True, key='1'):
+if st.checkbox('Mostra grafico', True, key='1'):
     if select == "Colonne":
         fig = px.bar(sentiment_count, x = 'Sentiment', y = 'Tweets', color='Tweets', height = 400)
         st.plotly_chart(fig, use_container_width=True)
@@ -61,20 +61,20 @@ if st.sidebar.checkbox('Mostra grafico', True, key='1'):
         fig = px.pie(sentiment_count, values = 'Tweets', names = 'Sentiment')
         st.plotly_chart(fig, use_container_width=True)
 
-st.sidebar.markdown('## 2. Mappa: quando e dove gli utenti hanno tweetato')
-hour = st.sidebar.slider('Scegli l\'ora del giorno', 0, 23)
+st.markdown('## 2. Mappa: quando e dove gli utenti hanno tweetato')
+hour = st.slider('Scegli l\'ora del giorno', 0, 23)
 selected_data = data[data['tweet_created'].dt.hour == hour]
 
-if st.sidebar.checkbox("Mostra mappa", True, key='2'):
+if st.checkbox("Mostra mappa", True, key='2'):
     st.markdown("%i tweets between %i:00 and %i:00" % (len(selected_data), hour, (hour+1)%24))
     st.map(selected_data)
-    if st.sidebar.checkbox("Mostra tabella dati", True):
+    if st.checkbox("Mostra tabella dati", True):
         st.write(selected_data)
 
 
 
-st.sidebar.markdown('## 3. I tweet per compagnia aerea')
-choice = st.sidebar.multiselect('Scegli la compagnia', ('American', 'Delta', 'Southwest', 'United', 'US Airways', 'Virgin America'), default=["American"], key = '0')
+st.markdown('## 3. I tweet per compagnia aerea')
+choice = st.multiselect('Scegli la compagnia', ('American', 'Delta', 'Southwest', 'United', 'US Airways', 'Virgin America'), default=["American"], key = '0')
 
 if len(choice) > 0:
     choice_data = data[data.airline.isin(choice)]
@@ -82,10 +82,10 @@ if len(choice) > 0:
     st.plotly_chart(fig_choice, use_container_width=True)
 
 
-st.sidebar.header("Word cloud")
-word_sentiment = st.sidebar.radio('Mostra word cloud in base al sentiment', ('positive', 'neutral', 'negative'), index = 0)
+st.header("Word cloud")
+word_sentiment = st.radio('Mostra word cloud in base al sentiment', ('positive', 'neutral', 'negative'), index = 0)
 
-if st.sidebar.checkbox("Mostra World Cloud", True, key='3'):
+if st.checkbox("Mostra World Cloud", True, key='3'):
     st.header('Word cloud per il sentiment %s' % (word_sentiment))
     df = data[data['airline_sentiment'] == word_sentiment]
     words = ' '.join(df['text'])
